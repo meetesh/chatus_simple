@@ -144,5 +144,24 @@ class UserManager
 			throw new BLException("No records");			
 		}
 	}
+
+	public function getCurrentUser()
+	{
+		try
+		{
+			if(session_status()==PHP_SESSION_NONE) session_start();
+			if($_SESSION['username'] != null)
+			{
+				$username = $_SESSION['username'];
+				$userDO = new UserDO();
+				$user = $userDO->getUserByUsername($username);
+				return $user;
+			}
+			throw new BLException("No user logged in");
+		}catch(DOException $doException)
+		{
+			throw new BLException($doException->getMessage());
+		}
+	}
 	
 }
