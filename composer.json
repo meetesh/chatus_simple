@@ -1,0 +1,13 @@
+{
+	"name": "chatus_simple",
+	"description": "Chating application in PHP",
+	"keywords": ["Chat", "Chat application"],
+	"author": {
+		"name": "MEETESH",
+		"email": "kmeetesh@gmail.com",
+		"role": "Creater/ Main Developer"
+	},
+	"require": {
+		"php": ">=5.5.0"
+	}
+}
