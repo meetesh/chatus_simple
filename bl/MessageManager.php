@@ -5,7 +5,7 @@ require_once $APP_PATH."../dl/Message.php";
 require_once $APP_PATH."../dl/MessageDO.php";
 require_once $APP_PATH."../dl/User.php";
 require_once $APP_PATH."../dl/UserDO.php";
-//require_once "BLException.php";
+require_once "BLException.php";
 class MessageManager 
 {
 	public function send($vMessage,$senderUsername,$receiverUsername)

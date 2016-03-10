@@ -3,7 +3,7 @@
 $APP_PATH = realpath(dirname(__DIR__));
 require_once $APP_PATH."../dl/User.php";
 require_once $APP_PATH."../dl/UserDO.php";
-//require_once "BLException.php";
+require_once "BLException.php";
 class UserManager 
 {
 	public function signup($name,$username,$password,$dateOfBirth)
