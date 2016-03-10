@@ -1,0 +1,27 @@
+1) index page
+
+	login and signup
+
+
+AddUser.php
+AuthenticateAndLoginUser.php
+CheckUsernameAvailability.php
+
+
+
+
+2) home page
+
+UpdateAliveStatus.php every 30sec
+GetOnlineUsers.php    every 10sec
+GetMessages.php every sec while typing
+SendMessage.php on hitting enter
+MessageSeen.php on some events like clicking on the message window 
+3) Update profile
+
+UpdateProfile.php
+
+give a check box on passwords
+
+4) Logout.php
+
