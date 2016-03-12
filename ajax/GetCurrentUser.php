@@ -11,8 +11,8 @@ foreach($user as $key=>$value)
 		$user->$key = htmlentities($value, ENT_QUOTES, 'UTF-8');
 }
 
-
-print json_encode($user);
+$res = array('success' => true,'user'=> $user );
+print json_encode($res);
 
 }catch(BLException $e)
 {

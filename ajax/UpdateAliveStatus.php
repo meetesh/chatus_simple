@@ -4,7 +4,7 @@ require "common.php";
 require __DIR__."/../bl/UserManager.php";
 $properties = array('username' =>'');
 
-foreach ($_GET as $key => $value) 
+foreach ($request as $key => $value) 
 {
 
 	if(array_key_exists($key, $properties))
@@ -13,7 +13,7 @@ foreach ($_GET as $key => $value)
 	}
 
 }
-
+/*
 foreach ($_POST as $key => $value) 
 {
 
@@ -23,7 +23,7 @@ foreach ($_POST as $key => $value)
 	}
 
 }
-
+*/
 
 //filter or validate here in this loop
 foreach ($properties as $key => $value)

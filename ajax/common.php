@@ -6,3 +6,9 @@ header("Cache-Control: no-store, no-cache, must-revalidate");
 header("Cache-Control: post-check=0, pre-check=0", false);
 // For HTTP/1.0
 header("Pragma: no-cache");
+
+
+
+$postdata = file_get_contents("php://input");
+$request = json_decode($postdata);
+
