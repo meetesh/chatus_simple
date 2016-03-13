@@ -14,7 +14,9 @@ foreach($users as $user)
 	}
 }
 
-print json_encode($users);
+$res = array('success' => true,'users'=> $users );
+print json_encode($res);
+
 
 }catch(BLException $e)
 {
