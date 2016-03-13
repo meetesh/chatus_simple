@@ -137,8 +137,8 @@ class UserDO
 		{
 			$c = DOConnection::getConnection();
 			$ps = $c->prepare("select * from user where last_updated>? order by name");
-			$oneMinute = date('Y-m-d H:i:s',time()-60);
-			$ps->bindParam(1,$oneMinute);
+			$timeToCheck= date('Y-m-d H:i:s',time()-10);  //10 sec
+			$ps->bindParam(1,$timeToCheck);
 			$ps->execute();
 			$row = $ps->fetch();
 			if(!$row)
