@@ -26,6 +26,12 @@ class UserManager
 			$user->dateOfBirth = $dateOfBirth;
 			$user->lastUpdated = date('Y-m-d H:i:s',time());
 			$userDO->add($user);
+			if(session_status()==PHP_SESSION_NONE)
+			{
+				session_start();
+			}
+			$_SESSION['username'] = $username;
+			
 			
 		}catch(DOException $do)
 		{
