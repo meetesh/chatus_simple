@@ -49,8 +49,8 @@ foreach($messages as $message)
 		$message->$key = htmlentities($value, ENT_QUOTES, 'UTF-8');
 	}
 }
-
-print json_encode($messages);
+$res = array('success' => true,'messages'=>$messages );
+print json_encode($res);
 
 }catch(BLException $e)
 {

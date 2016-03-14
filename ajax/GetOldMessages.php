@@ -14,8 +14,10 @@ foreach ($request as $key => $value)
 	}
 
 }
+
+
 /*
-foreach ($_POST as $key => $value) 
+foreach ($_GET as $key => $value) 
 {
 
 	if(array_key_exists($key, $properties))
@@ -50,7 +52,8 @@ foreach($messages as $message)
 	}
 }
 
-print json_encode($messages);
+$res = array('success' => true,'messages'=>$messages );
+print json_encode($res);
 
 }catch(BLException $e)
 {
