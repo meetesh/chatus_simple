@@ -1,0 +1,18 @@
+<!doctype html>
+<html ng-app='Chatus'>
+<head>
+	<title>Login up</title>
+	<script type="text/javascript" src='scripts/jquery-2.2.1.min.js'></script>
+	<script type="text/javascript" src='scripts/angular-1.5.0.min.js'></script>
+	<script type="text/javascript" src='scripts/models/chatus.js'></script>
+	<script type="text/javascript" src='scripts/services/userService.js'></script>
+	<script type="text/javascript" src='scripts/controllers/userController.js'></script>
+</head>
+<body ng-controller='userController'>
+	Enter username <input type='text' ng-model='username' /><br>
+	Enter Password <input type='text' ng-model='password' /><br>
+	<button ng-click='login()'>Login</button>
+
+</body>
+
+</html>
