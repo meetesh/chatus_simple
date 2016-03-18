@@ -139,6 +139,20 @@ class UserManager
 		}
 	}
 	
+	public function getAllUsers()
+	{
+		try
+		{
+			$userDO = new UserDO();
+			$users = $userDO->getAllUsers();
+			return $users;
+		}catch(DOException $doException)
+		{
+			throw new BLException("No records");
+		}
+	}
+
+	
 	public function updatePassword($username,$password)
 	{
 		try

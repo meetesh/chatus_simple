@@ -168,6 +168,43 @@ class UserDO
 			throw new DOException($e);
 		}
 	}
+	
+	public function getAllUsers()
+	{
+		try
+		{
+			$c = DOConnection::getConnection();
+			$ps = $c->prepare("select * from user order by name");
+			$ps->execute();
+			$row = $ps->fetch();
+			if(!$row)
+			{
+				$c = null;
+				throw new DOException("no records");
+			}
+			$x = 0;
+			$users = array();
+			do
+			{
+				$user = new User();
+				$user->id = $row['id'];
+				$user->name = $row['name'];
+				$user->username=$row['username'];
+				$user->password = $row['password'];
+				$user->lastUpdated = $row['last_updated'];
+				$user->dateOfBirth = $row['date_of_birth'];
+				$users[$x]= $user;
+				$x++;
+
+			}while($row = $ps->fetch());
+			$c = null;
+			return $users;
+		}catch(Exception $e)
+		{
+			throw new DOException($e);
+		}
+	}
+
 }
 	
 
