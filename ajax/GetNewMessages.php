@@ -15,7 +15,7 @@ foreach ($request as $key => $value)
 
 }
 /*
-foreach ($_POST as $key => $value) 
+foreach ($_GET as $key => $value) 
 {
 
 	if(array_key_exists($key, $properties))
