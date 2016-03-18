@@ -35,6 +35,12 @@ app.service("userService",function($http){
 		return $http.get('ajax/GetOnlineUsers.php');		
 	};
 
+	this.getAllUsers= function()
+	{
+		return $http.get('ajax/GetAllUsers.php');		
+	};
+
+	
 	this.logout = function()
 	{
 		return $http.get('ajax/Logout.php');		
