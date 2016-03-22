@@ -115,21 +115,51 @@
          </div>
 
          <div ng-if="userViewModelDS.mode=='in'">
-         	<div class='col-md-12'><h3>Wellcome home {{userDataModelDS.currentUser.username}}</h3></div>
+         	<div class='col-md-12'><h3>Wellcome home {{userDataModelDS.currentUser.username}}          		
+
+
+         	</div>
          	<div class='col-md-4 well well-sm  '>
          		<h3>Online Users</h3>
          		<div class='user-list'>
-         		<ul ng-if='userDataModelDS.onlineUsers.length'>
-         			<li ng-repeat='u in userDataModelDS.onlineUsers'>{{u.username}}</li>
+         		<ul ng-if='chatDataModelDS.length'>
+         			<li ng-repeat='cc in chatDataModelDS | userBasicOnlineFilter:userDataModelDS' ng-class='getSelectedUserCSSClass(cc.user)' ng-click='selectUser(cc)'>{{cc.user.username}} <span class='badge' ng-if='cc.newMessagesCount'>{{cc.newMessagesCount}}</span></li>
+         		</ul>
+         		<hr>
+         		<div class='user-list'>
+         		<ul ng-if='chatDataModelDS.length'>
+         			<li ng-repeat='cc in chatDataModelDS | userBasicFilter:userDataModelDS' ng-class='getSelectedUserCSSClass(cc.user)' ng-click='selectUser(cc)' >{{cc.user.username}} <span class='badge' ng-if='cc.newMessagesCount'>{{cc.newMessagesCount}}</span></li>
          		</ul>
          		</div>
-         	</div>         
+
+         		</div>
+         	</div>
          	<div class='col-md-1'>
          		<br>
          	</div>
          	<div class='col-md-7 well well-sm'>
-         		<p>Message area</p>
+         		<div ng-if='userDataModelDS.selectedChat' class='message-list'>
+
+         		<h3>{{userDataModelDS.selectedChat.user.username}}</h3>
+         		<hr />
+         			<ul>
+						<li ng-repeat='msg in userDataModelDS.selectedChat.newMessages' class='new-message' ng-class='getMessageCSSClass(msg)' title='{{msg.dateSent}}'>{{msg.message}}</li>
+
+         				<li ng-repeat='msg in userDataModelDS.selectedChat.messages' ng-class='getMessageCSSClass(msg)' title='{{msg.dateSent}}'>{{msg.message}}</li>
+         			</ul>
+         		</div>
          	</div>         
+			<div class='col-md-1'>
+         	</div>
+
+			<div class='col-md-7 well well-sm' ng-if='userDataModelDS.selectedChat'>
+				<textarea cols='80' rows='1' ng-model='messageDataModelDS.message'></textarea>
+				&nbsp;
+				<button class='btn btn-sm btn-default' ng-click='sendMessage()'>Send</button>
+				
+         	</div>
+         
+
          </div>
 
          <div ng-if="userViewModelDS.mode==''">
@@ -149,7 +179,10 @@
 	<script type="text/javascript" src='scripts/angular-1.5.0.min.js'></script>
 	<script type="text/javascript" src='scripts/models/chatus.js'></script>
 	<script type="text/javascript" src='scripts/services/userService.js'></script>
+	<script type="text/javascript" src='scripts/services/messageService.js'></script>
+		<script type="text/javascript" src='scripts/filters/userFilter.js'></script>
 	<script type="text/javascript" src='scripts/controllers/userController.js'></script>
+
 </body>
 
 </html>

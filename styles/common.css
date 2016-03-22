@@ -27,7 +27,6 @@ body {
 .user-list
 {
 	
-	overflow: scroll;
 	height: 400px;
 }
 
@@ -44,12 +43,85 @@ body {
 	margin-bottom:0.5em;
 	margin-left:3px;	
 	padding: 3px;
-	border:1px solid black;
 	border-radius: 3px;
+	border:1px solid #a1a1a1;
+
 }
 
 .user-list li:hover
 {
 	margin-left: 0px;
 	cursor: pointer;
+	border:1px solid black;
+
 }
+
+.user-selected 
+{
+	color:red;
+}
+
+
+
+
+
+.message-list
+{
+	
+	overflow: scroll;
+	height: 350px;
+}
+
+.message-list ul
+{
+	list-style-type: none;
+	
+}
+
+.message-list li
+{
+	margin-top:0.5em;	
+	margin-bottom:0.5em;
+	padding: 3px;
+	border:1px solid black;
+	border-radius: 3px 3px 3px 3px;
+}
+
+.sender-message
+{
+
+		background-color: #99D9EA;
+		text-align: left;
+
+}
+
+.receiver-message
+{
+
+	background-color: #C3C3C3;
+	text-align: right;
+
+}
+
+.message-list li:hover
+{
+	margin-left: 0px;
+	cursor: pointer;
+}
+
+.badge {
+line-height: 1.4em;
+background-color: red;
+color: white;
+padding: .3em;
+margin-left: .4em;
+border-radius: 4px 4px 4px 4px;
+float: right;
+}
+
+.new-message
+{
+		color:red;
+
+}
+

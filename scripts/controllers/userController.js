@@ -1,4 +1,4 @@
-app.controller('userController',function(userService,$scope){
+app.controller('userController',function(userService,messageService,$scope,$timeout){
 
 
 	$scope.userViewModelDS = {
@@ -19,15 +19,45 @@ app.controller('userController',function(userService,$scope){
 
 		},
 		gettingOnlineUsers:false,
-		updatingAliveStatus:false
+		gettingAllUsers:false,
+		updatingAliveStatus:false,
+		gettingNewMessages:false
+
 	};
+
+
+	$scope.messageDataModelDS = {
+
+		messages:[],
+		selectedMessages:[],
+		message:""
+
+	};
+
+
 
 
 	$scope.userDataModelDS = {
 
 		currentUser:null,
-		onlineUsers:[]
+		onlineUsers:[],
+		users:[],
+		selectedChat:null
+
 	}
+
+	$scope.chatDataModelDS = [
+		/*
+		structure will be like this.
+		var chats = [{
+			user:{},
+			messages:[{}],
+			status:'on/off',
+			newMessages:[]
+			newMessagesCount:0
+		}]
+		*/
+	];
 
 
 	$scope.login = function(){
@@ -62,6 +92,13 @@ app.controller('userController',function(userService,$scope){
 		$scope.userViewModelDS.signupForm.cPassword= '';
 		$scope.userViewModelDS.signupForm.dateOfBirth = '';
 		$scope.userViewModelDS.signupForm.message = '';
+		$scope.userDataModelDS.currentUser = null;
+		$scope.userDataModelDS.onlineUsers =[];
+		$scope.userDataModelDS.users =[];
+		$scope.userDataModelDS.selectedChat = null;
+		$scope.messageDataModelDS.messages = [];
+		$scope.chatDataModelDS = [];
+
 
 
 		// body...
@@ -71,6 +108,7 @@ app.controller('userController',function(userService,$scope){
 	{
 
 
+        clearFields();
 		userService.getCurrentUser()
 					.then(function(res){
 
@@ -78,8 +116,10 @@ app.controller('userController',function(userService,$scope){
 						{
 							$scope.userViewModelDS.mode = 'in';
 							$scope.userDataModelDS.currentUser = res.data.user;
+							populateAllUsers();
 							populateOnlineUsers();
 							updateAliveStatus();
+
 						}else
 						{
 							$scope.userViewModelDS.mode = 'out';
@@ -93,7 +133,6 @@ app.controller('userController',function(userService,$scope){
 
 					//more for later
 
-					clearFields();
 
 
 	};
@@ -107,14 +146,15 @@ app.controller('userController',function(userService,$scope){
 
 			if(res.data.success)
 			{
+
 	     		$scope.userDataModelDS.onlineUsers = res.data.users;
-    
 			}else
 			{
 		    	$scope.userDataModelDS.onlineUsers = [];
 			}
 
-  		$scope.userViewModelDS.gettingOnlineUsers = false;
+     		$scope.userViewModelDS.gettingOnlineUsers = false;
+     		applyFilter($scope.userDataModelDS.onlineUsers,$scope.userDataModelDS.users);
  
 		},function(){
 
@@ -123,10 +163,99 @@ app.controller('userController',function(userService,$scope){
 
 		});
 
-		if($scope.userViewModelDS.mode=='in') setTimeout(populateOnlineUsers,5000);
+		if($scope.userViewModelDS.mode=='in') 
+			{
+				$timeout(populateOnlineUsers,10000);
+			}
 
 
 	};
+
+
+function populateAllUsers () {
+
+
+		$scope.userViewModelDS.gettingAllUsers = true;
+
+		userService.getAllUsers().then(function(res){
+
+			if(res.data.success)
+			{
+
+	     		$scope.userDataModelDS.users = res.data.users;
+    
+			}else
+			{
+		    	$scope.userDataModelDS.users = [];
+			}
+
+  		$scope.userViewModelDS.gettingAllUsers = false;
+		applyFilter($scope.userDataModelDS.onlineUsers,$scope.userDataModelDS.users);
+
+ 
+		},function(){
+
+	  		$scope.userViewModelDS.gettingAllUsers = false;
+	  		console.log("can not connect");
+
+		});
+
+	};
+
+
+
+
+
+	function applyFilter(onlineUsers,users)
+	{
+		if(!onlineUsers.length || !users.length) return;
+		var del = null;
+		if($scope.chatDataModelDS.length==0)
+		{
+			//create DS
+			$scope.chatDataModelDS = [];
+			for(var x=0;x<users.length;x++)
+			{
+				del= {
+					"user":users[x],
+					"messages":[],
+					"status":"off",
+					"newMessages":[],
+					"newMessagesCount":0
+				}
+				for (var i =0;i<onlineUsers.length; i++) 
+				{
+					if(users[x].id==onlineUsers[i].id)
+					{
+						del.status = "on";
+						break;
+					}
+				}
+				$scope.chatDataModelDS.push(del);
+			}
+			$scope.getNewMessages();
+		}
+		else
+		{
+			//modify esisting ds
+			var chat = null;
+			for(var x = 0;x<$scope.chatDataModelDS.length;x++)
+			{
+				chat = $scope.chatDataModelDS[x];
+				chat.status = 'off';
+				for (var i =0;i<onlineUsers.length; i++) 
+				{
+					if(chat.user.id==onlineUsers[i].id)
+					{
+						chat.status = "on";
+						break;
+					}
+				}
+			}
+
+		}
+
+	}
 
 
 	function updateAliveStatus () {
@@ -149,10 +278,9 @@ app.controller('userController',function(userService,$scope){
 
 		});
 
-		if($scope.userViewModelDS.mode=='in') setTimeout(updateAliveStatus,5000);
+		if($scope.userViewModelDS.mode=='in') $timeout(updateAliveStatus,5000);
 	};
 
-	$scope.init();
 
 	$scope.logout = function(){
 
@@ -189,6 +317,232 @@ app.controller('userController',function(userService,$scope){
 
 	};
 
+
+	function getChat(user)
+	{
+		for(var i=0;i<$scope.chatDataModelDS.length;i++)
+		{
+			if($scope.chatDataModelDS[i].user.id==user.id)
+			{
+				return $scope.chatDataModelDS[i];
+			}
+		}
+
+		return null;
+
+	}
+
+
+	function getChatByUserId(userId)
+	{
+		for(var i=0;i<$scope.chatDataModelDS.length;i++)
+		{
+			if($scope.chatDataModelDS[i].user.id==userId)
+			{
+				return $scope.chatDataModelDS[i];
+			}
+		}
+
+		return null;
+
+	}
+
+
+	$scope.selectUser = function(chat)
+	{
+		if(chat == null) return;
+		$scope.userDataModelDS.selectedChat = chat;
+		if($scope.userDataModelDS.selectedChat.messages.length == 0)
+		{
+			getConversation(chat.user);
+		}else
+		{
+			if(chat.newMessages && chat.newMessages.length>0)
+			{
+				var k = [];
+				for(var i = 0;i<chat.newMessages.length;i++)
+				{
+					k.push(chat.newMessages[i]);
+				}
+				for(var i = 0;i<chat.messages.length;i++)
+				{
+					k.push(chat.messages[i]);
+				}
+				
+				chat.messages = k;
+				triggerSeenMessages(chat.newMessages);
+			}
+		}
+
+	};
+
+
+	function addMessages(user,messages) 
+	{
+		//do something different
+		getChat(user).messages = messages;
+	}
+
+
+	function getConversation(withUser)
+	{
+		messageService.getConversation($scope.userDataModelDS.currentUser.username,withUser.username)
+			.then(function(res){
+				if(res.data.success)
+				{
+					addMessages(withUser,res.data.messages);
+					$scope.userDataModelDS.selectedChat.messages = res.data.messages;
+					triggerSeenMessages(res.data.messages);
+
+				}else
+				{
+					addMessages(withUser,[]);
+				}
+
+
+			},function(){
+
+				alert("can not connect.")
+			});
+
+	}
+
+	function triggerSeenMessages(messages)
+	{
+		var k = [];
+		var tmp = null;
+		var tmpSenderUserId = 0;
+		angular.forEach(messages,function(message){
+
+			if(message.senderUserId != $scope.userDataModelDS.currentUser.id && message.seen != 1)
+			{
+				tmp = {
+					"code":message.code
+				};
+				k.push(tmp);
+				tmpSenderUserId = message.senderUserId;
+			}
+		});
+		messageService.seenMessages(k).then(function(res){
+
+			if(tmpSenderUserId)
+			{
+				var chat = getChatByUserId(tmpSenderUserId);
+				chat.newMessagesCount = 0;
+				chat.newMessages = [];
+			}
+
+
+		},function(){
+
+			alert("can not connect");
+
+		})
+	}
+
+	$scope.getMessageCSSClass = function(message){
+
+
+
+		if(message.senderUserId==$scope.userDataModelDS.currentUser.id)
+		{
+			return 'receiver-message'
+		}
+
+		return 'sender-message'
+
+	};
+
+	$scope.getSelectedUserCSSClass = function(user){
+
+		if(!$scope.userDataModelDS.selectedChat) return '';
+
+		if(user.id == $scope.userDataModelDS.selectedChat.user.id) return 'user-selected'
+			else
+				return '';
+
+	};
+
+
+
+
+
+	$scope.getNewMessages = function()
+	{
+		//to be wirtten
+		$scope.userViewModelDS.gettingNewMessages = true;
+		messageService.getNewMessages($scope.userDataModelDS.currentUser.username)
+			.then(function(res){
+				
+
+				if(res.data.success)
+				{
+					addNewMessages(res.data.messages);
+				}
+				$scope.userViewModelDS.gettingNewMessages = false;
+				if($scope.userViewModelDS.mode=='in') $timeout($scope.getNewMessages, 2000);
+
+			},function(){
+
+				alert("can not connect.")
+			});
+
+
+	}
+
+	function addNewMessages(messages)
+	{
+		var a = true;
+		angular.forEach(messages,function(msg){
+
+			var chat = getChatByUserId(msg.senderUserId);
+			a = false;
+			for(var i=0;i<chat.newMessages.length;i++)
+			{
+				if(chat.newMessages[i].code==msg.code)
+				{
+					a = true;
+					break;
+				}
+			}
+			if(!a) 
+			{
+				chat.newMessagesCount++;
+			    chat.newMessages.splice(0,0,msg);
+			}
+		});
+	}
+
+
+	$scope.sendMessage = function()
+	{
+		if($scope.messageDataModelDS.message.trim().length == 0) return;
+		messageService.sendMessage($scope.messageDataModelDS.message.trim(),$scope.userDataModelDS.currentUser.username,$scope.userDataModelDS.selectedChat.user.username)
+			.then(function(res){
+
+				if(res.data.success)
+				{
+					//very bad change it
+					getConversation($scope.userDataModelDS.selectedChat.user);
+					$scope.messageDataModelDS.message = "";
+				}else
+				{
+					alert('some error '+res.data.message);
+				}
+
+			},
+			function(){
+
+				alert('can not connect.')
+
+
+			});
+
+
+	};
+
+
+	$scope.init();
 
 
 });

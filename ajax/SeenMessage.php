@@ -5,7 +5,7 @@ require __DIR__."/../bl/MessageManager.php";
 
 //specify the required parameters which are supposed to be arrive in request
 
-$properties = array('code' =>'' );
+$properties = array('codes' =>'' );
 
 foreach ($request as $key => $value) 
 {
@@ -28,15 +28,13 @@ foreach ($_POST as $key => $value)
 }
 */
 //filter or validate here in this loop
-foreach ($properties as $key => $value)
+
+if(count($properties['codes'])==0)
 {
-	$properties[$key] = filter_var($value,FILTER_SANITIZE_STRING);
-	if(strlen($properties[$key])==0)
-	{
-		$res = array('success' =>false,'message'=>"$key required");
-		print json_encode($res);
-		die();
-	}
+	$res = array('success' =>false,'message'=>"codes required");
+	print json_encode($res);
+	die();
+
 }
 
 
@@ -44,7 +42,9 @@ $messageManager = new MessageManager();
 
 try
 {
-$messageManager->seen($properties['code']);
+
+
+$messageManager->seen($properties['codes']);
 $res = array('success' =>true);
 print json_encode($res);
 

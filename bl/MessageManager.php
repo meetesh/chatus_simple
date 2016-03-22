@@ -63,14 +63,17 @@ class MessageManager
 		}
 	}
 	
-	public function seen($code)
+	public function seen($codes)
 	{
 		try
 		{
 			$messageDO = new MessageDO();
-			$message = $messageDO->get($code);
-			$message->seen = 1;
-			$messageDO->update($message);
+			foreach ($codes as $value) 
+			{
+				$message = $messageDO->get($value->code);
+				$message->seen = 1;
+				$messageDO->update($message);
+			}
 		}catch(DOException $doException)
 		{
 			throw new BLException($doException->getMessage());

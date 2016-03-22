@@ -1,0 +1,21 @@
+onlineUsers : [A,B,C];
+
+currentUser : [M],
+
+selectUser(B)
+{
+getConversation(M,B)
+{
+messages.add(B,responseMessages)
+}
+
+}
+
+messages :
+[
+{
+'user' :B,
+'messages':[{},{},{},{},{},{},{},{},{},{},{},{},{}]
+
+
+]

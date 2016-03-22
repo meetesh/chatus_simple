@@ -1,0 +1,30 @@
+plan 
+
+
+as page loads
+
+fetch current user (done)
+
+fetch all users (not done)
+fetch and keep fetching online users (done)
+
+place online users to top of the list and rest below that
+
+
+now keep fetching new messages (once in 4sec)
+
+the structure  should be
+
+
+get new messages
+
+{
+"success": true,
+"users": [{
+"code": "aa",
+"name": "bb",
+"messages": [{}]
+}]
+}
+
+add each user 
